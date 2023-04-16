@@ -1,46 +1,45 @@
-def median(lst, i, j, k):
-    if (lst[i] - lst[j]) * (lst[j] - lst[k]) >= 0:
-        return j
-    elif (lst[i] - lst[k]) * (lst[k] - lst[j]) >= 0:
-        return k
+def median(data_array, start, middle, end):
+    if (data_array[start] - data_array[middle]) * (data_array[middle] - data_array[end]) >= 0:
+        return middle
+    elif (data_array[start] - data_array[end]) * (data_array[end] - data_array[middle]) >= 0:
+        return end
     else:
-        return i
+        return start
 
 
-def swap(lst, i, j,counter):
-    lst[i], lst[j] = lst[j], lst[i]
+def swap(data_array, first_elm, last_elm, counter):
+    data_array[first_elm], data_array[last_elm] = data_array[last_elm], data_array[first_elm]
     counter = counter +1
     return counter
 
-def qsort_mo3(lst, l, u,counter):
+def qsort_mo3(data_array, beginning, end, counter):
     try:
-        # use median-of-3 instead of randomization
-        if l >= u:
+        if beginning >= end:
             return counter
-        mid = l + (u - l) // 2
-        r = median(lst, l, mid, u)
-        counter = swap(lst, l, r,counter)
-        m = lst[l]
-        i = l
-        j = u + 1
+        mid = beginning + (end - beginning) // 2
+        pivot = median(data_array, beginning, mid, end)
+        counter = swap(data_array, beginning, pivot, counter)
+        first_elm = data_array[beginning]
+        limit = beginning
+        end_place = end + 1
         while True:
             while True:
-                i += 1
-                if i >= j or lst[i] >= m:
+                limit += 1
+                if limit >= end_place or data_array[limit] >= first_elm:
                     break
             while True:
-                j -= 1
-                if i >= j or lst[j] <= m:
+                end_place -= 1
+                if limit >= end_place or data_array[end_place] <= first_elm:
                     break
-            if i >= j:
+            if limit >= end_place:
                 break
-            counter = swap(lst, i, j,counter)
+            counter = swap(data_array, limit, end_place, counter)
 
-        counter = swap(lst, l, i-1,counter)
+        counter = swap(data_array, beginning, limit - 1, counter)
 
-        counter = qsort_mo3(lst, l, i-2,counter)
-        counter = qsort_mo3(lst, i, u,counter)
+        counter = qsort_mo3(data_array, beginning, limit - 2, counter)
+        counter = qsort_mo3(data_array, limit, end, counter)
         return counter
     except RecursionError:
-        print('Caught Recursion Error with datalength: {}'.format(len(lst)))
+        print('Caught Recursion Error with datalength: {}'.format(len(data_array)))
         exit()
